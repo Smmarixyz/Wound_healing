@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HEALING App</title>
+    <style>
+        body {
+            background-image: url('static/css/images/world-diabetes-day-doctor-holding-patient-hand-s.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        form {
+            margin: 20px auto;
+            width: 500px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            text-align: left;
+            align:left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 80%;
+            padding: 5px;
+            margin-bottom: 0px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .input-form{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .input-field {
+            width: calc(20% - 10px);
+            margin-bottom: 10px;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+        .result-box:nth-child(odd) {
+            background-color: #7B68EE; /* Add your desired background color or image */
+        }
+
+        .result-box:nth-child(even) {
+            background-color: #66CDAA; /* Add your desired background color or image */
+        }
+
+        .result-box label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .prediction-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .prediction-field {
+            width: 45%;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        function handlePrediction(type) {
+            var predictionForm = document.getElementById("prediction-form");
+            var predictionInput = document.getElementById("prediction-input");
+
+            if (type === "ann") {
+                predictionForm.action = "/ann_prediction";
+                predictionInput.name = "ann_prediction";
+            } else if (type === "random_forest") {
+                predictionForm.action = "/random_forest_prediction";
+                predictionInput.name = "random_forest_prediction";
+            } else if (type === "clustering") {
+                predictionForm.action = "/clustering_prediction";
+                predictionInput.name = "clustering_prediction";
+            } else if (type === "xgboost") {
+                predictionForm.action = "/xgboost_prediction";
+                predictionInput.name = "xgboost_prediction";
+            }
+
+            predictionForm.submit();
+        }
+
+        function sendEmail() {
+            var email = document.getElementById("email-input").value;
+            var emailSubject = "HEALING App Prediction Results";
+            var message = "ANN Prediction: " + document.getElementById("ann-prediction").value + "\n" +
+                "Random Forest Prediction: " + document.getElementById("random-forest-prediction").value + "\n" +
+                "Clustering Prediction: " + document.getElementById("clustering-prediction").value + "\n" +
+                "XGBoost Prediction: " + document.getElementById("xgboost-prediction").value;
+
+            var mailtoLink = "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(message);
+            window.location.href = mailtoLink;
+        }
+    </script>
+</head>
+<body>
+    <h1>HEALING App</h1>
+    <h1>Input Data</h1>
+    <form method="POST" action="/" id="input-form">
+        <div class="input-form">
+            <div class="input-field">
+                <label for="sensor1">Sensor 1:</label>
+                <input type="number" step="0.01" name="sensor1" required>
+            </div>
+            <div class="input-field">
+                <label for="sensor2">Sensor 2:</label>
+                <input type="number" step="0.01" name="sensor2" required>
+            </div>
+            <div class="input-field">
+                <label for="sensor3">Sensor 3:</label>
+                <input type="number" step="0.01" name="sensor3" required>
+            </div>
+            <div class="input-field">
+                <label for="sensor4">Sensor 4:</label>
+                <input type="number" step="0.01" name="sensor4" required>
+            </div>
+            <div class="input-field">
+                <label for="sensor5">Sensor 5:</label>
+                <input type="number" step="0.01" name="sensor5" required>
+            </div>
+        </div>
+        <div class="input-form">
+            <div class="input-field">
+                <label for="manual11">Manual 11:</label>
+                <input type="number" name="manual11" required>
+            </div>
+            <div class="input-field">
+                <label for="manual12">Manual 12:</label>
+                <input type="number" name="manual12" required>
+            </div>
+            <div class="input-field">
+                <label for="manual13">Manual 13:</label>
+                <input type="number" name="manual13" required>
+            </div>
+            <div class="input-field">
+                <label for="manual14">Manual 14:</label>
+                <input type="number" name="manual14" required>
+            </div>
+            <div class="input-field">
+                <label for="manual15">Manual 15:</label>
+                <input type="number" name="manual15" required>
+            </div>
+        </div>
+
+        <input type="submit" name="submit" value="Get Predictions">
+    </form>
+
+    <div id="prediction-results">
+        {% if prediction_sent %}
+        <div class="result-box">
+            <h2>Email Sent</h2>
+            <p>The prediction results have been sent to your email.</p>
+        </div>
+        {% endif %}
+        {% if prediction %}
+        <div class="result-box">
+            <h2>ANN Prediction</h2>
+            <div class="prediction-container">
+                <div class="prediction-field">
+                    <label>Type of Wound:</label>
+                   <input type="text" id="ann-prediction" name="wound_type" value="{{ prediction }}" readonly>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if chronic_wound_prediction %}
+        <div class="result-box">
+            <h2>Random Forest Prediction</h2>
+            <div class="prediction-container">
+                <div class="prediction-field">
+                    <label>Type of Diabetic Chronic Wound:</label>
+                    <input type="text" id="random-forest-prediction" name="chronic_wound_type" value="{{ chronic_wound_prediction }}" readonly>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if cluster_prediction %}
+        <div class="result-box">
+            <h2>Clustering Prediction</h2>
+            <div class="prediction-container">
+                {% if cluster_prediction == 0 %}
+                <div class="prediction-field">
+                    <label>Drug Composition:</label>
+                    <input type="text" id="clustering-prediction" name="drug_composition" value="Composition 1" readonly>
+                </div>
+                {% elif cluster_prediction == 1 %}
+                <div class="prediction-field">
+                    <label>Drug Composition:</label>
+                    <input type="text" id="clustering-prediction" name="drug_composition" value="Composition 2" readonly>
+                </div>
+                {% elif cluster_prediction == 2 %}
+                <div class="prediction-field">
+                    <label>Drug Composition:</label>
+                    <input type="text" id="clustering-prediction" name="drug_composition" value="Composition 3" readonly>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% if electrotherapy_prediction %}
+        <div class="result-box">
+            <h2>XGBoost Prediction</h2>
+            <div class="prediction-container">
+                <label><h2>Optimal Feedback Parameters</h2></label>
+                <div class="prediction-field">
+
+                    <label>Amplitude:</label>
+                    <input type="text" id="xgboost-prediction" name="amplitude" value="{{ electrotherapy_prediction }}" readonly>
+                </div>
+                <div class="prediction-field">
+                    <label>Frequency:</label>
+                    <input type="text" id="xgboost-predictionf" name="frequency" value="{{ electrotherapy_predictionf }}" readonly>
+                </div>
+            </div>
+            <div class="prediction-container">
+                <div class="prediction-field">
+                    <label>Voltage:</label>
+                    <input type="text" id="xgboost-predictionv" name="voltage" value="{{ electrotherapy_predictionv }}" readonly>
+                </div>
+                <div class="prediction-field">
+                    <label>Pulse Duration:</label>
+                    <input type="text" id="xgboost-predictionp" name="pulse_duration" value="{{ electrotherapy_predictionp }}" readonly>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <div id="email-form">
+        <label for="email-input">Enter Email:</label>
+        <input type="email" id="email-input" placeholder="Enter your email" required>
+        <button onclick="sendEmail()">Send Mail</button>
+    </div>
+    <script>
+        document.getElementById("prediction-results").addEventListener("click", function(event) {
+            var target = event.target;
+            if (target.classList.contains("result-box")) {
+                var inputForm = document.getElementById("input-form");
+                inputForm.scrollIntoView({ behavior: "smooth" });
+            }
+        });
+    </script>
+</body>
+</html>
