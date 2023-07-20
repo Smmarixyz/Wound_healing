@@ -1,15 +1,15 @@
 # Wound_healing
-Real-time Prediction and Email Notification System for Wound Treatment
+Real-time Prediction and Email Notification System for Diabetics Wound Treatment
 
 Introduction
 
-The code represents a real-time system for wound treatment that integrates various machine learning algorithms and sends email notifications with prediction results. It utilizes sensor data to predict wound type, recommend electrotherapy parameters, and provide insights for chronic wound diagnosis. The system aims to enhance wound treatment efficiency and decision-making.
+The code represents a real-time system for Diabetics wound treatment that integrates various machine learning algorithms and sends email notifications with prediction results. It utilizes sensor data to predict wound type, recommend electrotherapy parameters, and provide insights for chronic wound diagnosis. The system aims to enhance wound treatment efficiency and decision-making.
 
 Key Features:
 
-	Real-time prediction: Predicts wound type using MLPClassifier and chronic wound diagnosis using RandomForestClassifier.
+	Real-time prediction: Predicts Diabetics wound type using MLPClassifier and chronic wound diagnosis using RandomForestClassifier.
 	Electrotherapy recommendation: Uses XGBoost Regressor to recommend optimal amplitude, frequency, pulse duration, and voltage for electrotherapy based on sensor inputs.
-	Clustering: Performs K-means clustering to predict drug composition for wound treatment.
+	Clustering: Performs K-means clustering to predict drug composition for Diabetics wound treatment.
 	Email notification: Sends email notifications with prediction results and recommendations.
 
 Technology Used:
@@ -34,7 +34,7 @@ Skills Demonstrated:
 
 Uniqueness:
 
-	Real-time prediction: The system enables real-time wound type prediction and electrotherapy recommendations based on sensor inputs.
+	Real-time prediction: The system enables real-time Diabetics wound type prediction and electrotherapy recommendations based on sensor inputs.
 	Email notifications: A sending email notification with prediction results and recommendations provide quick access to insights and facilitates decision-making.
 
 Conclusion:
